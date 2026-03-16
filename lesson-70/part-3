@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 70.3: Поверхневий натяг олії</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: { enableMenu: false },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        document.body.classList.add('mathjax-ready');
+                        if (typeof updateUI === 'function') updateUI();
+                    });
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: "Cambria Math", "Cambria", "Times New Roman", serif;
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 24px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            touch-action: pan-y;
+            overflow-x: hidden;
+        }
+
+        .task-header {
+            width: 95%;
+            max-width: 1200px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 28px;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .task-text {
+            font-size: 22px;
+            color: #374151;
+            text-align: justify;
+        }
+
+        .step {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .step.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .physics-table {
+            display: table;
+            width: 95%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            vertical-align: top;
+            padding: 10px 15px;
+        }
+
+        .header-cell {
+            font-weight: bold;
+            font-size: 24px; 
+            padding-bottom: 20px;
+        }
+
+        .v-line {
+            border-right: 2.5px solid black;
+        }
+
+        .h-line-dano {
+            border-top: 2.5px solid black;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .nav-arrow.left { left: 5px; }
+        .nav-arrow.right { right: 5px; }
+
+        .answer-box {
+            width: 95%;
+            max-width: 1200px;
+            border-top: 2px solid #1e40af;
+            margin-top: 50px;
+            padding-top: 20px;
+            font-weight: bold;
+            font-size: 24px;
+            color: #1e40af;
+        }
+        
+        .mjx-chtml {
+            font-size: 100% !important;
+        }
+
+        @media (max-width: 768px) {
+            body { font-size: 18px; }
+            .task-title { font-size: 22px; }
+            .task-text { font-size: 18px; }
+            .header-cell { font-size: 18px; }
+            .answer-box { font-size: 18px; }
+            .physics-table { width: 100%; }
+            .cell { padding: 5px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="prev-btn" class="nav-arrow left"><span class="text-4xl text-gray-600">‹</span></div>
+    <div id="next-btn" class="nav-arrow right"><span class="text-4xl text-gray-600">›</span></div>
+
+    <!-- Шапка вправи -->
+    <div class="task-header">
+        <div class="task-title">Задача 70.3</div>
+        <div class="task-text">
+            Визначте коефіцієнт поверхневого натягу олії, густина якої дорівнює $910 \, \text{кг/м}^3$, якщо при пропущенні через піпетку $4 \, \text{см}^3$ олії отримано $304$ краплі. Діаметр шийки піпетки $1,2 \, \text{мм}$.
+        </div>
+    </div>
+
+    <div id="main-container" class="physics-table">
+        <div class="row">
+            <!-- Колонка 1: Дано -->
+            <div class="cell v-line w-[25%]">
+                <div class="header-cell">Дано:</div>
+                <div class="space-y-4">
+                    <div class="step" id="step-1">$V = 4 \, \text{см}^3$</div>
+                    <div class="step" id="step-2">$N = 304$</div>
+                    <div class="step" id="step-3">$\rho = 910 \, \frac{\text{кг}}{\text{м}^3}$</div>
+                    <div class="step" id="step-4">$d = 1,2 \, \text{мм}$</div>
+                    <div class="step" id="step-5">$g \approx 9,8 \, \frac{\text{Н}}{\text{кг}}$</div>
+                    <div class="h-line-dano step" id="step-10">
+                        $\sigma - ?$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Колонка 2: СІ -->
+            <div class="cell v-line w-[15%] text-center">
+                <div class="header-cell">СІ</div>
+                <div class="space-y-4">
+                    <div class="step" id="step-6">$4 \cdot 10^{-6} \, \text{м}^3$</div>
+                    <div class="step" id="step-7">—</div>
+                    <div class="step" id="step-8">—</div>
+                    <div class="step" id="step-9">$1,2 \cdot 10^{-3} \, \text{м}$</div>
+                </div>
+            </div>
+
+            <!-- Колонка 3: Розв'язання -->
+            <div class="cell v-line w-[30%]">
+                <div class="header-cell text-center">Розв'язання</div>
+                <div class="flex flex-col items-center space-y-6 mt-4">
+                    <div class="step text-gray-700" id="step-11">Умова відриву краплі ($F_{\text{тяж}} = F_{\text{пов}}$):</div>
+                    <div class="step font-bold" id="step-12">$$m_0 g = \sigma \pi d$$</div>
+                    <div class="step text-gray-700" id="step-13">Маса однієї краплі:</div>
+                    <div class="step" id="step-14">$$m_0 = \frac{\rho V}{N}$$</div>
+                    <div class="step text-blue-800 font-bold" id="step-15">
+                        $$\sigma = \frac{\rho V g}{N \pi d}$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Колонка 4: Обчислення -->
+            <div class="cell w-[30%]">
+                <div class="header-cell text-center">&nbsp;</div>
+                <div class="flex flex-col space-y-8 mt-4 items-center">
+                    <div class="step" id="step-16">
+                        $$ [\sigma] = \frac{\frac{\text{кг}}{\text{м}^3} \cdot \text{м}^3 \cdot \frac{\text{Н}}{\text{кг}}}{\text{м}} = \frac{\text{Н}}{\text{м}} $$
+                    </div>
+                    <div class="step text-green-700 font-bold" id="step-17">
+                        $$ \sigma = \frac{910 \cdot 4 \cdot 10^{-6} \cdot 9,8}{304 \cdot 3,14 \cdot 1,2 \cdot 10^{-3}} = 0,031 \, \frac{\text{Н}}{\text{м}} $$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Розгорнута відповідь -->
+    <div class="step answer-box" id="step-18">
+        Відповідь: Коефіцієнт поверхневого натягу олії становить $0,031 \, \text{Н/м} \quad (31 \, \text{мН/м})$.
+    </div>
+
+    <div class="fixed bottom-4 right-6 text-gray-400 text-xs bg-white/80 p-1 rounded">
+        Крок <span id="step-counter">0</span> / 18
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 18;
+
+        function updateUI() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (el) {
+                    if (i <= currentStep) el.classList.add('visible');
+                    else el.classList.remove('visible');
+                }
+            }
+            document.getElementById('step-counter').innerText = currentStep;
+            document.getElementById('prev-btn').style.visibility = currentStep === 0 ? "hidden" : "visible";
+            document.getElementById('next-btn').style.opacity = currentStep === totalSteps ? "0.3" : "1";
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        const next = () => { if (currentStep < totalSteps) { currentStep++; updateUI(); } };
+        const prev = () => { if (currentStep > 0) { currentStep--; updateUI(); } };
+
+        document.getElementById('next-btn').onclick = next;
+        document.getElementById('prev-btn').onclick = prev;
+
+        let touchstartX = 0;
+        let touchendX = 0;
+        function handleGesture() {
+            if (touchendX < touchstartX - 50) next();
+            if (touchendX > touchstartX + 50) prev();
+        }
+        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleGesture(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowRight' || e.code === 'Space') next();
+            if (e.code === 'ArrowLeft') prev();
+        });
+
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
