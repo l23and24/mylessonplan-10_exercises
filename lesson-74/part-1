@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Задача 1. Механічна напруга в шийці гака</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1,
+                minScale: 0.5
+            },
+            options: { 
+                enableMenu: false,
+                processHtmlClass: 'mathjax-process'
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        document.body.classList.add('mathjax-ready');
+                        updateUI();
+                    });
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --line-color: #000000;
+        }
+
+        body {
+            font-family: "Cambria Math", "Cambria", "Times New Roman", serif;
+            background-color: #ffffff;
+            color: #000000;
+            /* Адаптивний базовий шрифт */
+            font-size: clamp(16px, 2.5vw, 22px);
+            line-height: 1.4;
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px; /* Для смарт-дошок */
+            margin: 0 auto;
+        }
+
+        .task-header {
+            width: 100%;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .task-text {
+            font-size: 1em;
+            color: #374151;
+            text-align: justify;
+        }
+
+        .physics-layout {
+            display: flex;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .column {
+            padding: 10px;
+            border-right: 2.5px solid var(--line-color);
+        }
+
+        .column:last-child {
+            border-right: none;
+        }
+
+        .header-cell {
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .h-line {
+            border-top: 2.5px solid var(--line-color);
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .step {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Навігація */
+        .nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(30, 64, 175, 0.1);
+            color: var(--primary-blue);
+            width: 50px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            border-radius: 10px;
+            user-select: none;
+            font-size: 40px;
+        }
+        .nav-btn:hover { background: rgba(30, 64, 175, 0.2); }
+        .nav-btn.left { left: 5px; }
+        .nav-btn.right { right: 5px; }
+
+        .answer-box {
+            width: 100%;
+            border-top: 3px solid var(--primary-blue);
+            margin-top: 30px;
+            padding: 15px 0;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* Мобільна адаптація */
+        @media (max-width: 768px) {
+            .physics-layout {
+                flex-wrap: wrap;
+            }
+            .column {
+                width: 50% !important;
+                border-bottom: 1px solid #eee;
+                min-height: 150px;
+            }
+            .column:nth-child(even) {
+                border-right: none;
+            }
+            .column.full-width-mobile {
+                width: 100% !important;
+                border-right: none;
+            }
+            .nav-btn {
+                height: 60px;
+                width: 40px;
+                background: rgba(30, 64, 175, 0.2);
+            }
+        }
+    </style>
+</head>
+<body class="mathjax-process">
+
+    <div id="prev-btn" class="nav-btn left">‹</div>
+    <div id="next-btn" class="nav-btn right">›</div>
+
+    <div class="container">
+        <!-- Шапка -->
+        <div class="task-header">
+            <div class="task-title">Задача 1. Механічна напруга в шийці гака</div>
+            <div class="task-text">
+                Яка механічна напруга виникає в шийці гака підйомного крана під час рівномірного піднімання вантажу масою $6 \, \text{т}$? Діаметр шийки гака $28 \, \text{мм}$.
+            </div>
+        </div>
+
+        <!-- Основна таблиця -->
+        <div class="physics-layout">
+            <!-- Дано -->
+            <div class="column" style="width: 25%;">
+                <div class="header-cell">Дано:</div>
+                <div class="space-y-2">
+                    <div class="step" id="step-1">$m = 6 \, \text{т}$</div>
+                    <div class="step" id="step-2">$d = 28 \, \text{мм}$</div>
+                    <div class="h-line step" id="step-5">$\sigma - ?$</div>
+                </div>
+            </div>
+
+            <!-- СІ -->
+            <div class="column" style="width: 15%;">
+                <div class="header-cell">СІ</div>
+                <div class="space-y-2 text-center">
+                    <div class="step" id="step-3">$6000 \, \text{кг}$</div>
+                    <div class="step" id="step-4">$0,028 \, \text{м}$</div>
+                </div>
+            </div>
+
+            <!-- Розв'язання -->
+            <div class="column" style="width: 30%;">
+                <div class="header-cell text-center">Розв'язання</div>
+                <div class="flex flex-col items-center space-y-4 text-center">
+                    <div class="step text-sm text-gray-500 italic" id="step-6">Механічна напруга:</div>
+                    <div class="step font-bold" id="step-7">$$\sigma = \frac{F}{S}$$</div>
+                    <div class="step text-sm text-gray-500 italic" id="step-8">Сила (вага):</div>
+                    <div class="step" id="step-9">$$F = mg$$</div>
+                    <div class="step text-sm text-gray-500 italic" id="step-10">Площа:</div>
+                    <div class="step" id="step-11">$$S = \frac{\pi d^2}{4}$$</div>
+                    <div class="step text-blue-800 font-bold" id="step-12">$$\sigma = \frac{4mg}{\pi d^2}$$</div>
+                </div>
+            </div>
+
+            <!-- Обчислення -->
+            <div class="column" style="width: 30%;">
+                <div class="header-cell text-center">Обчислення</div>
+                <div class="flex flex-col space-y-6 items-center">
+                    <div class="step" id="step-13">
+                        $$ [\sigma] = \frac{\text{кг} \cdot \frac{\text{Н}}{\text{кг}}}{\text{м}^2} = \text{Па} $$
+                    </div>
+                    <div class="step text-green-700 font-bold" id="step-14">
+                        $$ \sigma = \frac{4 \cdot 6000 \cdot 9,8}{3,14 \cdot 0,028^2} \approx 95,5 \cdot 10^6 \, (\text{Па}) $$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Відповідь -->
+        <div class="step answer-box" id="step-15">
+            Відповідь: $\sigma \approx 95,5 \, \text{МПа}$.
+        </div>
+    </div>
+
+    <!-- Лічильник кроків -->
+    <div class="fixed bottom-2 left-2 text-gray-400 text-[10px] sm:text-xs">
+        Крок <span id="step-counter">0</span> / 15
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 15;
+
+        function updateUI() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (el) {
+                    if (i <= currentStep) {
+                        el.classList.add('visible');
+                    } else {
+                        el.classList.remove('visible');
+                    }
+                }
+            }
+            document.getElementById('step-counter').innerText = currentStep;
+            document.getElementById('prev-btn').style.opacity = currentStep === 0 ? "0" : "1";
+            document.getElementById('next-btn').style.opacity = currentStep === totalSteps ? "0.3" : "1";
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const next = () => { if (currentStep < totalSteps) { currentStep++; updateUI(); } };
+        const prev = () => { if (currentStep > 0) { currentStep--; updateUI(); } };
+
+        document.getElementById('next-btn').onclick = next;
+        document.getElementById('prev-btn').onclick = prev;
+
+        // Swipe logic
+        let touchstartX = 0;
+        let touchendX = 0;
+        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+        document.addEventListener('touchend', e => { 
+            touchendX = e.changedTouches[0].screenX;
+            if (touchstartX - touchendX > 50) next();
+            if (touchendX - touchstartX > 50) prev();
+        }, {passive: true});
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowRight' || e.code === 'Space' || e.code === 'Enter') next();
+            if (e.code === 'ArrowLeft' || e.code === 'Backspace') prev();
+        });
+
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
