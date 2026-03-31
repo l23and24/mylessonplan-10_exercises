@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 74.2: Модуль Юнга</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: { enableMenu: false },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        document.body.classList.add('mathjax-ready');
+                        if (typeof updateUI === 'function') updateUI();
+                    });
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: "Cambria Math", "Cambria", "Times New Roman", serif;
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 22px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            touch-action: pan-y;
+            overflow-x: hidden;
+        }
+
+        .task-header {
+            width: 95%;
+            max-width: 1200px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 26px;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .task-text {
+            font-size: 20px;
+            color: #374151;
+            text-align: justify;
+        }
+
+        .step {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .step.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .physics-table {
+            display: table;
+            width: 95%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            vertical-align: top;
+            padding: 10px 15px;
+        }
+
+        .header-cell {
+            font-weight: bold;
+            font-size: 22px; 
+            padding-bottom: 20px;
+        }
+
+        .v-line {
+            border-right: 2.5px solid black;
+        }
+
+        .h-line-dano {
+            border-top: 2.5px solid black;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .nav-arrow:hover { background: rgba(0, 0, 0, 0.1); }
+        .nav-arrow.left { left: 5px; }
+        .nav-arrow.right { right: 5px; }
+
+        .answer-box {
+            width: 95%;
+            max-width: 1200px;
+            border-top: 2px solid #1e40af;
+            margin-top: 50px;
+            padding-top: 20px;
+            font-weight: bold;
+            font-size: 22px;
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            body { font-size: 16px; }
+            .task-title { font-size: 20px; }
+            .task-text { font-size: 16px; }
+            .header-cell { font-size: 18px; }
+            .physics-table { width: 100%; display: block; }
+            .row { display: block; }
+            .cell { display: block; width: 100% !important; border-right: none; border-bottom: 1px solid #eee; }
+            .v-line { border-right: none; }
+        }
+    </style>
+</head>
+<body class="mathjax-process">
+
+    <div id="prev-btn" class="nav-arrow left"><span class="text-4xl text-gray-600">‹</span></div>
+    <div id="next-btn" class="nav-arrow right"><span class="text-4xl text-gray-600">›</span></div>
+
+    <div class="task-header">
+        <div class="task-title">Задача 74.2</div>
+        <div class="task-text">
+            Циліндр, площа перерізу якого $S = 2 \, \text{см}^2$, під дією вантажу масою $m = 1,05 \, \text{т}$ стиснувся на $0,025 \, \%$ початкової довжини. Визначте модуль Юнга матеріалу, з якого виготовлено брусок.
+        </div>
+    </div>
+
+    <div id="main-container" class="physics-table">
+        <div class="row">
+            <!-- Дано -->
+            <div class="cell v-line w-[25%]">
+                <div class="header-cell">Дано:</div>
+                <div class="space-y-4">
+                    <div class="step" id="step-1">$S = 2 \, \text{см}^2$</div>
+                    <div class="step" id="step-2">$m = 1,05 \, \text{т}$</div>
+                    <div class="step" id="step-3">$\varepsilon = 0,025 \, \%$</div>
+                    <div class="h-line-dano step" id="step-7">
+                        $E - ?$
+                    </div>
+                </div>
+            </div>
+
+            <!-- СІ -->
+            <div class="cell v-line w-[20%] text-center">
+                <div class="header-cell">СІ</div>
+                <div class="space-y-4">
+                    <div class="step" id="step-5">$2 \cdot 10^{-4} \, \text{м}^2$</div>
+                    <div class="step" id="step-6">$1050 \, \text{кг}$</div>
+                    <div class="step" id="step-17">$0,00025$</div>
+                </div>
+            </div>
+
+            <!-- Розв'язання -->
+            <div class="cell v-line w-[30%]">
+                <div class="header-cell text-center">Розв'язання</div>
+                <div class="flex flex-col items-center space-y-6 mt-4">
+                    <div class="step text-sm text-gray-600" id="step-8">Закон Гука:</div>
+                    <div class="step font-bold" id="step-9">$\sigma = E \cdot \varepsilon$</div>
+                    <div class="step text-sm text-gray-600" id="step-10">Механічна напруга:</div>
+                    <div class="step" id="step-11">$\sigma = \dfrac{mg}{S}$</div>
+                    <div class="step text-blue-800 font-bold" id="step-12">
+                        $E = \dfrac{mg}{S \cdot \varepsilon}$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Обчислення -->
+            <div class="cell w-[25%]">
+                <div class="header-cell text-center">&nbsp;</div>
+                <div class="flex flex-col space-y-6 mt-4 items-center text-center">
+                    <div class="step" id="step-13">
+                        $$ [E] = \frac{\text{кг} \cdot \frac{\text{Н}}{\text{кг}}}{\text{м}^2} = \text{Па} $$
+                    </div>
+                    <div class="step" id="step-14">
+                        $$ E = \frac{1050 \cdot 10}{2 \cdot 10^{-4} \cdot 0,00025} \approx $$
+                        <span class="text-green-700 font-bold text-2xl">$\approx 2,1 \cdot 10^{11} \, \text{Па}$</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step answer-box" id="step-16">
+        Відповідь: $E = 210 \, \text{ГПа}$.
+    </div>
+
+    <div class="fixed bottom-4 right-6 text-gray-400 text-xs bg-white/80 p-1 rounded">
+        Крок <span id="step-counter">0</span> / 15
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 15;
+
+        function updateUI() {
+            // Масив кроків у порядку появи (без пропущених)
+            const steps = [1, 2, 3, 5, 6, 17, 7, 8, 9, 10, 11, 12, 13, 14, 16];
+            
+            steps.forEach((stepId, index) => {
+                const el = document.getElementById(`step-${stepId}`);
+                if (el) {
+                    if (index < currentStep) el.classList.add('visible');
+                    else el.classList.remove('visible');
+                }
+            });
+
+            document.getElementById('step-counter').innerText = currentStep;
+            document.getElementById('prev-btn').style.visibility = currentStep === 0 ? "hidden" : "visible";
+            document.getElementById('next-btn').style.opacity = currentStep === steps.length ? "0.3" : "1";
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        const next = () => { if (currentStep < 15) { currentStep++; updateUI(); } };
+        const prev = () => { if (currentStep > 0) { currentStep--; updateUI(); } };
+
+        document.getElementById('next-btn').onclick = next;
+        document.getElementById('prev-btn').onclick = prev;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowRight' || e.code === 'Space') next();
+            if (e.code === 'ArrowLeft') prev();
+        });
+
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
